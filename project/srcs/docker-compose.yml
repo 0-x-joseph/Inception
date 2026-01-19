@@ -1,0 +1,72 @@
+services:
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb/
+    environment:
+      - MARIA_DB_NAME=${MARIA_DB_NAME}
+      - MARIA_USERNAME=${MARIA_USERNAME}
+      - MARIA_PASSWORD=${MARIA_PASSWORD}
+      - MARIA_ROOT_PASSWORD=${MARIA_ROOT_PASSWORD}
+    networks:
+      - inception-net
+    volumes:
+      - ${MARIA_VOLUME}:/var/lib/mysql
+
+
+  wordpress:
+    container_name: wordpress
+    build:
+      context: ./requirements/wordpress/
+    environment:
+      - WP_DB_NAME=${WP_DB_NAME}
+      - WP_DB_USER=${WP_DB_USER}
+      - WP_DB_PASSWORD=${WP_DB_PASSWORD}
+      - WP_DB_HOST=${WP_DB_HOST}
+
+      - WP_URL=${WP_URL}
+
+      - WP_ADMIN_USER=${WP_ADMIN_USER}ybouryal
+      - WP_ADMIN_PASSWORD=${WP_ADMIN_PASSWORD}
+      - WP_ADMIN_EMAIL=${WP_ADMIN_EMAIL}
+
+      - WP_USER=${WP_USER}
+      - WP_PASSWORD=${WP_PASSWORD}
+      - WP_EMAIL=${WP_EMAIL}
+    depends_on:
+      - mariadb
+    networks:
+      - inception-net
+    volumes:
+      - ${WP_VOLUME}:/var/www/html
+    restart: always
+
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./requirements/nginx/
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    networks:
+      - inception-net
+    volumes:
+      - ${WP_VOLUME}:/var/www/html
+    secrets:
+      - server_crt
+      - server_key
+
+  
+networks:
+  inception-net:
+    driver: bridge
+
+secrets:
+  server_crt:
+    file: ../secrets/server.crt
+  server_key:
+    file: ../secrets/server.key
