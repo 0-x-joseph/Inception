@@ -11,7 +11,7 @@ services:
     networks:
       - inception-net
     volumes:
-      - ${MARIA_VOLUME}:/var/lib/mysql
+      - mariadb_volume:/var/lib/mysql
 
 
   wordpress:
@@ -38,7 +38,7 @@ services:
     networks:
       - inception-net
     volumes:
-      - ${WP_VOLUME}:/var/www/html
+      - wordpress_volume:/var/www/html
     restart: always
 
 
@@ -55,7 +55,7 @@ services:
     networks:
       - inception-net
     volumes:
-      - ${WP_VOLUME}:/var/www/html
+      - wordpress_volume:/var/www/html
     secrets:
       - server_crt
       - server_key
@@ -70,3 +70,17 @@ secrets:
     file: ../secrets/server.crt
   server_key:
     file: ../secrets/server.key
+
+volumes:
+  mariadb_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${MARIA_VOLUME}
+      o: bind
+  wordpress_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${WP_VOLUME}
+      o: bind
