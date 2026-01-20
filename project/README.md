@@ -106,3 +106,11 @@ All traffic is routed through **HTTPS (Port 443)**. Direct access to the databas
 - [HTTPS, SSL, TLS & Certificate Authority](https://www.youtube.com/watch?v=EnY6fSng3Ew)
 - [Nginx](https://www.youtube.com/watch?v=7VAI73roXaY)
 - [Docker under the hood](https://www.youtube.com/watch?v=sK5i-N34im8)
+
+### Artificial Intelligence (AI) Disclosure
+
+In compliance with the project guidelines, AI was utilized as a technical resource during development:
+
+- **AI Model:** Gemini (LLM).
+- **Application:** Used for "rubber-ducking" complex kernel logic in the C runtime, debugging the Nginx-to-PHP-FPM communication protocol (specifically 403/404 errors), and refactoring shell scripts to handle race conditions during volume initialization.
+- **Verification:** Every AI-suggested logic change was manually reviewed, tested against the Debian Bullseye environment, and verified to ensure compatibility with the project's strict security requirements.
