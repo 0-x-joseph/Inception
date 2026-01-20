@@ -73,14 +73,12 @@ secrets:
 
 volumes:
   mariadb_volume:
-    driver: local
     driver_opts:
-      type: none
+      type: 'none'
       device: ${MARIA_VOLUME}
       o: bind
   wordpress_volume:
-    driver: local
     driver_opts:
-      type: none
+      type: 'none'
       device: ${WP_VOLUME}
       o: bind
