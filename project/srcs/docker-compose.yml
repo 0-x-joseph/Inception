@@ -1,6 +1,7 @@
 services:
   mariadb:
     container_name: mariadb
+    image: mariadb
     build:
       context: ./requirements/mariadb/
     environment:
@@ -16,6 +17,7 @@ services:
 
   wordpress:
     container_name: wordpress
+    image: wordpress
     build:
       context: ./requirements/wordpress/
     environment:
@@ -44,6 +46,7 @@ services:
 
   nginx:
     container_name: nginx
+    image: nginx
     build:
       context: ./requirements/nginx/
     environment:
@@ -63,6 +66,7 @@ services:
   
 networks:
   inception-net:
+    name: inception-net
     driver: bridge
 
 secrets:
@@ -73,11 +77,13 @@ secrets:
 
 volumes:
   mariadb_volume:
+    name: mariadb_volume
     driver_opts:
       type: 'none'
       device: ${MARIA_VOLUME}
       o: bind
   wordpress_volume:
+    name: wordpress_volume
     driver_opts:
       type: 'none'
       device: ${WP_VOLUME}

@@ -7,11 +7,15 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p /run/mysqld \
 	&& chmod 777 /run/mysqld
 
-RUN sed -i 's/bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN sed -i 's/bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/' \
+	/etc/mysql/mariadb.conf.d/50-server.cnf
 
-COPY tools/setup.sh /usr/local/bin
-RUN chmod +x /usr/local/bin/setup.sh
+COPY tools/entrypoint.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 3306
 
-ENTRYPOINT ["/usr/local/bin/setup.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["mysqld_safe"]
+# CMD ["mariadbd", "--user=mysql", "--datadir=/var/lib/mysql"]

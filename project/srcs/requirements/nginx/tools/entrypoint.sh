@@ -1,9 +1,10 @@
 #!/bin/bash
-set -e
+# -e: exits with non zero if any line failed
+# -u: exit with non zero if variables are unset
+# -x: trace execution of each line
+set -eux
 
-: "${DOMAIN_NAME:?Missing DOMAIN_NAME}"
-
-# Prefer Compose/Docker secrets (mounted by default at /run/secrets/<name>) [web:78]
+# Docker Compose secrets mounted by default at /run/secrets/<name>
 CRT_SECRET="/run/secrets/server_crt"
 KEY_SECRET="/run/secrets/server_key"
 
@@ -11,6 +12,11 @@ KEY_SECRET="/run/secrets/server_key"
 CRT="/etc/nginx/ssl/inception.crt"
 KEY="/etc/nginx/ssl/inception.key"
 
+
+# Remove default site if present
+rm -f /etc/nginx/sites-enabled/default /etc/nginx/sites-available/default || true
+
+# TLS material will live here
 mkdir -p /etc/nginx/ssl
 
 # If secrets exist, copy them into the expected nginx path with strict perms
@@ -27,4 +33,4 @@ else
   exit 1
 fi
 
-exec "$@"
+exec nginx -g 'daemon off;'

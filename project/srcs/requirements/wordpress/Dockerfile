@@ -17,15 +17,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		mariadb-client \
  && rm -rf /var/lib/apt/lists/*
 
-RUN sed -i 's|^listen = .*|listen = 9000|g' /etc/php/*/fpm/pool.d/www.conf \
- && mkdir -p /run/php
+# Install wp-cli
+RUN curl -sSLo /usr/local/bin/wp \
+	https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+	&& chmod +x /usr/local/bin/wp
 
-WORKDIR /var/www/html
+RUN sed -i 's|listen = /run/php/php7.4-fpm.sock|listen = 0.0.0.0:9000|' \
+/etc/php/7.4/fpm/pool.d/www.conf
 
-COPY ./tools/script.sh /usr/local/bin/script.sh
+RUN mkdir -p /run/php
 
-RUN chmod +x /usr/local/bin/script.sh
+COPY ./tools/entrypoint.sh /usr/local/bin
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 9000
 
-ENTRYPOINT ["/usr/local/bin/script.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["php-fpm7.4", "-F", "-R"]
